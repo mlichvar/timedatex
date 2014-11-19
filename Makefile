@@ -9,6 +9,9 @@ CPPFLAGS += $(shell pkg-config --cflags libselinux) -DHAVE_SELINUX
 LDFLAGS += $(shell pkg-config --libs libselinux)
 endif
 
+EXTRA_LDFLAGS =
+LDFLAGS += $(EXTRA_LDFLAGS)
+
 prefix = /usr/local
 sbindir = $(prefix)/sbin
 unitdir = $(prefix)/lib/systemd/system
