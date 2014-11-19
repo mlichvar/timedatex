@@ -1,0 +1,11 @@
+[Unit]
+Description=System clock and RTC settings service
+
+[Service]
+ExecStart=/usr/sbin/timedatex
+BusName=org.freedesktop.timedate1
+CapabilityBoundingSet=CAP_SYS_TIME
+PrivateTmp=yes
+
+[Install]
+Alias=dbus-org.freedesktop.timedate1.service

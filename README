@@ -1,0 +1,55 @@
+timedatex
+=========
+
+timedatex is a D-Bus service that implements the org.freedesktop.timedate1
+interface. It can be used to read and set the system clock, the real-time clock
+(RTC), the system timezone, and enable or disable an NTP client installed on
+the system. It is a replacement for the systemd-timedated service.
+
+The system clock is read and set with microsecond resolution, the precision is
+limited mostly by D-Bus latency. When setting the clock to an absolute time, a
+correction is applied for the time spent in the polkit authorization check. The
+clock can be also adjusted precisely by an offset.
+
+The RTC is read with a resolution of one second. The hwclock program is used to
+set the RTC with a high precision, update the estimated drift, and change the
+UTC/LOCAL setting.
+
+The system timezone is set by creating symlink /etc/localtime to a file in the
+/usr/share/zoneinfo directory.
+
+NTP units that should be controlled by timedatex need to be listed in text
+files in /etc/systemd/ntp-units.d and /usr/lib/systemd/ntp-units.d directories.
+The first valid unit from the files sorted by name can be enabled/disabled and
+started/stopped. Other NTP units will be disabled and stopped.
+
+Requirements:
+
+- glib development files
+- libselinux development files (optional)
+- polkit
+- systemd
+- hwclock from util-linux
+
+Installation:
+
+$ make
+# make install prefix=/usr
+# systemctl daemon-reload
+# systemctl enable timedatex.service
+
+
+Copyright (C) 2014  Miroslav Lichvar <mlichvar@redhat.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
