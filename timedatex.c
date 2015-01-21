@@ -81,7 +81,7 @@ struct ntp_unit {
 struct method_call_data {
 	union {
 		struct {
-			gchar timezone[MAX_TIMEZONE_LENGTH];
+			gchar timezone[MAX_TIMEZONE_LENGTH + 1];
 		} set_timezone;
 		struct {
 			gint64 request_time;
