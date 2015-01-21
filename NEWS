@@ -1,2 +1,6 @@
+0.2 (2015-01-21)
+- add man page
+- fix creating timezone symlink with maximum length
+
 0.1 (2014-11-19)
 - initial release
