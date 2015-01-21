@@ -14,6 +14,8 @@ LDFLAGS += $(EXTRA_LDFLAGS)
 
 prefix = /usr/local
 sbindir = $(prefix)/sbin
+mandir = $(prefix)/share/man
+man8dir = $(mandir)/man8
 unitdir = $(prefix)/lib/systemd/system
 ntpunitdir = $(prefix)/lib/systemd/ntp-units.d
 
@@ -38,8 +40,9 @@ timedated.h: timedated.xml
 		echo) < $^ > $@
 
 install: $(NAME)
-	mkdir -p $(sbindir) $(unitdir) $(ntpunitdir)
+	mkdir -p $(sbindir) $(man8dir) $(unitdir) $(ntpunitdir)
 	install $(NAME) $(sbindir)
+	install -p -m 644 $(NAME).8 $(man8dir)
 	install -p -m 644 $(NAME).service $(unitdir)
 
 .deps:

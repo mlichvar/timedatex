@@ -1,0 +1,37 @@
+.TH timedatex 8
+.SH NAME
+timedatex \- D-Bus service for system clock and RTC settings
+
+.SH SYNOPSIS
+\fBtimedatex\fR
+
+.SH DESCRIPTION
+timedatex is a D-Bus service that implements the org.freedesktop.timedate1
+interface. It can be used to read and set the system clock, the real-time clock
+(RTC), the system timezone, and enable or disable an NTP client installed on
+the system. It is a replacement for the systemd-timedated service.
+
+The system clock is read and set with microsecond resolution, the precision is
+limited mostly by D-Bus latency. When setting the clock to an absolute time, a
+correction is applied for the time spent in the polkit authorization check. The
+clock can be also adjusted precisely by an offset.
+
+The RTC is read with a resolution of one second. The hwclock program is used to
+set the RTC with a high precision, update the estimated drift, and change the
+UTC/LOCAL setting.
+
+The system timezone is set by creating symlink /etc/localtime to a file in the
+/usr/share/zoneinfo directory.
+
+NTP units that should be controlled by timedatex need to be listed in text
+files in /etc/systemd/ntp-units.d and /usr/lib/systemd/ntp-units.d directories.
+The first valid unit from the files sorted by name can be enabled/disabled and
+started/stopped. Other NTP units will be disabled and stopped.
+
+.SH SEE ALSO
+.BR timedatectl (1),
+.BR systemd-timedated (8),
+.BR hwclock (8)
+
+.SH AUTHOR
+Miroslav Lichvar <mlichvar@redhat.com>
