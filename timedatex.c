@@ -952,7 +952,8 @@ static void register_object(GDBusConnection *connection, const gchar *name, gpoi
 		goto error;
 
 	/* We need to handle the properties interface ourself as gdbus doesn't
-	   support GetAll calls with empty interface name (e.g. from timedatectl) */
+	   support GetAll calls with empty interface name (e.g. from timedatectl),
+	   https://bugzilla.gnome.org/show_bug.cgi?id=741101 */
 	error = NULL;
 	if (!g_dbus_connection_register_object(connection, TIMEDATED_PATH, properties_interface,
 					       &interface_vtable, NULL, NULL, &error))
