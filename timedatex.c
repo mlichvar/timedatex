@@ -711,17 +711,17 @@ error:
 	return g_variant_new_string("");
 }
 
-static void set_default_file_context(const gchar *path, const gchar *target) {
+static void set_localtime_file_context(const gchar *path) {
 #ifdef HAVE_SELINUX
 	security_context_t con;
 
 	if (!is_selinux_enabled())
 		return;
 
-	if (matchpathcon_init_prefix(NULL, target))
+	if (matchpathcon_init_prefix(NULL, LOCALTIME_PATH))
 		return;
 
-	if (!matchpathcon(LOCALTIME_PATH, 0, &con)) {
+	if (!matchpathcon(LOCALTIME_PATH, S_IFLNK, &con)) {
 		lsetfilecon(path, con);
 		freecon(con);
 	}
@@ -791,7 +791,7 @@ static void finish_set_timezone(GDBusMethodInvocation *invocation, struct method
 	if (symlink(link, tmp))
 		goto error;
 
-	set_default_file_context(tmp, link);
+	set_localtime_file_context(tmp);
 
 	if (rename(tmp, LOCALTIME_PATH)) {
 		unlink(tmp);
