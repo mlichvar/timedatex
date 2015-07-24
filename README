@@ -37,6 +37,7 @@ $ make
 # make install prefix=/usr
 # systemctl daemon-reload
 # systemctl enable timedatex.service
+# systemctl mask systemd-timedated.service
 
 systemd should now start timedatex instead of systemd-timedated for the
 org.freedesktop.timedate1 bus name when a client tries to connect to it.
