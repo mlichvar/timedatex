@@ -378,6 +378,7 @@ static void read_ntp_units(void) {
 	const gchar *entry;
 	struct ntp_unit unit;
 	GDir *dir;
+	guint i, j;
 
 	free_ntp_units();
 
@@ -422,6 +423,19 @@ static void read_ntp_units(void) {
 
 	/* Sort the units by filename */
 	g_array_sort(ntp_units, compare_ntp_units);
+
+	/* Remove duplicates, keep only the first entry for each unit */
+	for (i = 0; i < ntp_units->len; i++) {
+		for (j = i + 1; j < ntp_units->len; ) {
+			if (g_strcmp0(get_ntp_unit(i)->name, get_ntp_unit(j)->name)) {
+				j++;
+				continue;
+			}
+			g_free(get_ntp_unit(j)->name);
+			g_free(get_ntp_unit(j)->sort_name);
+			g_array_remove_index(ntp_units, j);
+		}
+	}
 }
 
 static void update_ntp_units(void) {
