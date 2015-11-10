@@ -1,3 +1,7 @@
+0.4 (2015-11-10)
+- fix handling of duplicate entries in ntp-units.d (rhbz#1279760)
+- update installation instructions for recent systemd versions
+
 0.3 (2015-05-11)
 - fix setting /etc/localtime SELinux context (Adam Williamson)
 
