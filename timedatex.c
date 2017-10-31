@@ -325,6 +325,12 @@ static void start_hwclock_call(gboolean hctosys, gboolean local, gboolean utc,
 	GPid pid;
 	GError *error = NULL;
 	struct hwclock_call *hwclock_call;
+	struct stat st;
+
+	if (stat(RTC_DEVICE, &st) || !(st.st_mode & S_IFCHR)) {
+		return_error(invocation, G_DBUS_ERROR_FAILED, "No RTC device");
+		return;
+	}
 
 	argv[argc++] = HWCLOCK_PATH;
 	argv[argc++] = "-f";
