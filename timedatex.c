@@ -320,13 +320,15 @@ static void finish_hwclock_call(GPid pid, gint status, gpointer user_data) {
 static void start_hwclock_call(gboolean hctosys, gboolean local, gboolean utc,
 			       GDBusMethodInvocation *invocation, hwclock_call_handler handler,
 			       struct method_call_data *handler_data) {
-	char *argv[6] = { 0 };
+	char *argv[8] = { 0 };
 	int argc = 0;
 	GPid pid;
 	GError *error = NULL;
 	struct hwclock_call *hwclock_call;
 
 	argv[argc++] = HWCLOCK_PATH;
+	argv[argc++] = "-f";
+	argv[argc++] = RTC_DEVICE;
 	argv[argc++] = hctosys ? "--hctosys" : "--systohc";
 	if (local)
 		argv[argc++] = "--local";
