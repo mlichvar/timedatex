@@ -131,6 +131,9 @@ static void return_success(GDBusMethodInvocation *invocation) {
 static void return_error(GDBusMethodInvocation *invocation, gint code, const gchar *format, ...) {
 	va_list va;
 
+	if (!invocation)
+		return;
+
 	va_start(va, format);
 	g_dbus_method_invocation_return_error_valist(invocation, G_DBUS_ERROR, code, format, va);
 	va_end(va);
