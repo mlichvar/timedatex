@@ -1,3 +1,7 @@
+0.5 (2017-11-07)
+- check if /dev/rtc exists before calling hwclock
+- specify RTC device in hwclock call
+
 0.4 (2015-11-10)
 - fix handling of duplicate entries in ntp-units.d (rhbz#1279760)
 - update installation instructions for recent systemd versions
