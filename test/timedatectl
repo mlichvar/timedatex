@@ -1,11 +1,11 @@
 #!/bin/sh
 
-savedtz=$(timedatectl | grep Timezone | awk '{ print $2 }')
+savedtz=$(timedatectl | grep 'Time zone' | awk '{ print $3 }')
 
 timedatectl || exit 1
 
 timedatectl set-time "$(date +'%H:%M:%S')" || exit 1
-
+sleep 2
 timedatectl set-local-rtc 0 || exit 1
 sleep 1
 timedatectl set-local-rtc 1 || exit 1
