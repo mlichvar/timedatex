@@ -120,7 +120,7 @@ struct hwclock_call {
 
 /* Global variables */
 static GDBusProxy *systemd_proxy, *polkit_proxy;
-static gboolean main_quit, running_auth_checks;
+static gboolean main_quit, running_auth_checks, had_activity;
 static GArray *ntp_units;
 
 
@@ -948,6 +948,8 @@ static void handle_method_call(GDBusConnection *connection, const gchar *caller,
 	} else {
 		g_assert_not_reached();
 	}
+
+	had_activity = TRUE;
 }
 
 static const GDBusInterfaceVTable interface_vtable = {
@@ -1022,19 +1024,24 @@ int main(int argc, char **argv) {
 	read_ntp_units();
 
 	main_quit = FALSE;
+	had_activity = FALSE;
 
 	/* This is the main loop. Quit when idle for QUIT_TIMEOUT seconds. */
 
 	while (!main_quit) {
 		/* Add timeout when not waiting for an authorization check */
-		if (!running_auth_checks)
+		if (!timeout_id && !running_auth_checks)
 			timeout_id = g_timeout_add(QUIT_TIMEOUT * 1000, stop_main_loop, NULL);
 
 		g_main_context_iteration(g_main_context_default(), TRUE);
 
-		if (timeout_id)
-			g_source_remove(timeout_id);
-		timeout_id = 0;
+		if (had_activity || running_auth_checks) {
+			had_activity = FALSE;
+
+			if (timeout_id)
+				g_source_remove(timeout_id);
+			timeout_id = 0;
+		}
 	}
 
 	ret = 0;
