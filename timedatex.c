@@ -120,7 +120,8 @@ struct hwclock_call {
 
 /* Global variables */
 static GDBusProxy *systemd_proxy, *polkit_proxy;
-static gboolean main_quit, running_auth_checks, had_activity;
+static gboolean main_quit, had_activity;
+static guint running_auth_checks;
 static GArray *ntp_units;
 
 
