@@ -845,6 +845,8 @@ static gboolean check_timezone_name(const gchar *name) {
 	gint i;
 	gchar path[PATH_MAX];
 	struct stat st;
+	char magic[4];
+	FILE *f;
 
 	/* Check if the name is sane */
 	if (!name || *name == '/' || strstr(name, "//") || strstr(name, "..") ||
@@ -861,6 +863,21 @@ static gboolean check_timezone_name(const gchar *name) {
 	if (snprintf(path, sizeof path, "%s%s", ZONEINFO_PATH, name) >= sizeof path)
 		return FALSE;
 	if (stat(path, &st) || !(st.st_mode & S_IFREG))
+		return FALSE;
+
+	/* Check if the file begins with "TZif" */
+	f = fopen(path, "r");
+	if (!f)
+		return FALSE;
+
+	if (fread(magic, sizeof (magic), 1, f) != 1) {
+		fclose(f);
+		return FALSE;
+	}
+
+	fclose(f);
+
+	if (memcmp(magic, "TZif", 4) != 0)
 		return FALSE;
 
 	return TRUE;
