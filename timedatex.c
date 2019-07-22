@@ -843,7 +843,7 @@ error:
 
 static gboolean check_timezone_name(const gchar *name) {
 	gint i;
-	gchar link[PATH_MAX];
+	gchar path[PATH_MAX];
 	struct stat st;
 
 	/* Check if the name is sane */
@@ -858,9 +858,9 @@ static gboolean check_timezone_name(const gchar *name) {
 
 	/* Check if the correspoding file exists in the zoneinfo directory, it
 	   doesn't have to be listed in zone.tab */
-	if (snprintf(link, sizeof link, "%s%s", ZONEINFO_PATH, name) >= sizeof link)
+	if (snprintf(path, sizeof path, "%s%s", ZONEINFO_PATH, name) >= sizeof path)
 		return FALSE;
-	if (stat(link, &st) || !(st.st_mode & S_IFREG))
+	if (stat(path, &st) || !(st.st_mode & S_IFREG))
 		return FALSE;
 
 	return TRUE;
