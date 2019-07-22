@@ -18,3 +18,8 @@ sleep 1
 
 timedatectl set-ntp 1 || exit 1
 timedatectl set-ntp 0 || exit 1
+
+timezones=$(timedatectl list-timezones) || exit 1
+
+echo "$timezones" | grep -q '^Europe/Prague$' || exit 1
+[ $(echo "$timezones" | wc -l) -gt 300 ] || exit 1
