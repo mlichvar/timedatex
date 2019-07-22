@@ -70,5 +70,8 @@
    <arg type="b" direction="in"/>
    <arg type="b" direction="in"/>
   </method>
+  <method name="ListTimezones">
+   <arg type="as" direction="out"/>
+  </method>
  </interface>
 </node>

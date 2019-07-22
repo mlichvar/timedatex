@@ -3,8 +3,9 @@ timedatex
 
 timedatex is a D-Bus service that implements the org.freedesktop.timedate1
 interface. It can be used to read and set the system clock, the real-time clock
-(RTC), the system timezone, and enable or disable an NTP client installed on
-the system. It is a replacement for the systemd-timedated service.
+(RTC), the system timezone, get a list of valid timezones, and enable or
+disable an NTP client installed on the system. It is a replacement for the
+systemd-timedated service.
 
 The system clock is read and set with microsecond resolution, the precision is
 limited mostly by D-Bus latency. When setting the clock to an absolute time, a

@@ -46,6 +46,7 @@
 
 #define LOCALTIME_PATH "/etc/localtime"
 #define ZONEINFO_PATH "/usr/share/zoneinfo/"
+#define ZONETAB_PATH "/usr/share/zoneinfo/zone1970.tab"
 #define LOCALTIME_TO_ZONEINFO_PATH ".."
 #define MAX_TIMEZONE_LENGTH 256
 
@@ -737,6 +738,67 @@ error:
 	return g_variant_new_string("");
 }
 
+static gint compare_timezones(gconstpointer a, gconstpointer b) {
+	return g_strcmp0(*(gchar **)a, *(gchar **)b);
+}
+
+static GArray *read_timezones(void) {
+	gchar *contents, **lines, **line, *timezone, *s1, *s2;
+	GArray *timezones;
+	int i;
+
+	timezones = g_array_new(FALSE, FALSE, sizeof (gchar *));
+
+	if (!g_file_get_contents(ZONETAB_PATH, &contents, NULL, NULL))
+		goto error;
+
+	lines = g_strsplit_set(contents, "\r\n", -1);
+	g_free(contents);
+
+	for (line = lines; *line; line++) {
+		if (!**line || **line == '#')
+			continue;
+
+		/* Find the third tab-delimited field */
+		for (i = 0, s1 = s2 = *line; i < 3 && s1 && (s2 = s1); i++)
+			s1 = strchr(s1 + 1, '\t');
+		if (i < 3)
+			continue;
+		if (s1)
+			*s1 = '\0';
+
+		timezone = g_strdup(s2 + 1);
+		g_array_append_val(timezones, timezone);
+	}
+
+	g_strfreev(lines);
+
+	g_array_sort(timezones, compare_timezones);
+error:
+	return timezones;
+}
+
+static void list_timezones(GVariant *parameters, GDBusMethodInvocation *invocation, const gchar *caller) {
+	GVariantBuilder builder;
+	GArray *timezones;
+	gchar *timezone;
+	guint i;
+
+	g_variant_builder_init(&builder, G_VARIANT_TYPE("as"));
+
+	timezones = read_timezones();
+
+	for (i = 0; i < timezones->len; i++) {
+		timezone = g_array_index(timezones, gchar *, i);
+		g_variant_builder_add(&builder, "s", timezone);
+		g_free(timezone);
+	}
+
+	g_array_free(timezones, TRUE);
+
+	g_dbus_method_invocation_return_value(invocation, g_variant_new("(as)", &builder));
+}
+
 static void set_localtime_file_context(const gchar *path) {
 #ifdef HAVE_SELINUX
 	security_context_t con;
@@ -884,6 +946,8 @@ static void handle_method_call(GDBusConnection *connection, const gchar *caller,
 			set_rtc_local(parameters, invocation, caller);
 		else if (!g_strcmp0(method_name, "SetNTP"))
 			set_ntp_active(parameters, invocation, caller);
+		else if (!g_strcmp0(method_name, "ListTimezones"))
+			list_timezones(parameters, invocation, caller);
 		else
 			g_assert_not_reached();
 
