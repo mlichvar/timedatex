@@ -382,7 +382,7 @@ static void free_ntp_units(void) {
 	ntp_units = NULL;
 }
 
-gint compare_ntp_units(gconstpointer a, gconstpointer b) {
+static gint compare_ntp_units(gconstpointer a, gconstpointer b) {
 	return g_strcmp0(((struct ntp_unit *)a)->sort_name, ((struct ntp_unit *)b)->sort_name);
 }
 
