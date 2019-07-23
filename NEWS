@@ -1,3 +1,8 @@
+0.6 (2019-07-23)
+- add support for listing timezones
+- verify timezone file begins with magic string
+- avoid getting stuck in infinite loop with some glib2 versions
+
 0.5 (2017-11-07)
 - check if /dev/rtc exists before calling hwclock
 - specify RTC device in hwclock call
